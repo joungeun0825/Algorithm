@@ -3,8 +3,6 @@ import java.lang.*;
 import java.io.*;
 import java.util.Scanner;
 
-// The main method must be in a class named "Main".
-
 class IntStack{
     private int[] stk;
     private int capacity;
