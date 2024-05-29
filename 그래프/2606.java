@@ -4,62 +4,47 @@ import java.io.*;
 
 // The main method must be in a class named "Main".
 class Main {
-    static Node[] node;
-    static int sum = 0;
+    static ArrayList<Integer>[] node;
+    static boolean[] visited;
+    static int cnt;
     public static void main(String[] args) throws IOException{
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(reader.readLine());
-        int cnt = Integer.parseInt(reader.readLine());
-        
-        node = new Node[N];
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int M = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i < N; i++) {
-            node[i] = new Node();
+        node = new ArrayList[M+1];
+        visited = new boolean[M+1];
+        for(int i=1;i<=M;i++){
+            node[i] = new ArrayList<Integer>();
+        }
+        
+        for(int i=0;i<N;i++){
+            st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+
+            node[x].add(y);
+            node[y].add(x);
         }
 
-        for(int i=0;i<cnt;i++){
-            StringTokenizer parentTokenizer = new StringTokenizer(reader.readLine());
-            int first = Integer.parseInt(parentTokenizer.nextToken());
-            int second = Integer.parseInt(parentTokenizer.nextToken());
+        cnt = 0;
+        dfs(1);
+        System.out.println(cnt-1);
             
-            node[first-1].addNetwork(second-1);
-            node[second-1].addNetwork(first-1);
-        }
-        node[0].visited = true;
-        int virusComputer = getVirusComputer(0);
-        System.out.println(virusComputer);
     }
-    static public int getVirusComputer(int index){
+
+    public static void dfs(int start){
+        visited[start] = true;
+        cnt += 1;
         
-        for(int i=0; i<node[index].getNetworkSize(); i++){
-            if(!node[node[index].network.get(i)].visited){
-                
-                node[node[index].network.get(i)].visited = true;
-                sum += 1;
-                getVirusComputer(node[index].network.get(i));
+        for (int x : node[start]) {
+            if(!visited[x]){
+                dfs(x);
             }
-        }
-        return sum;
+        }     
+        
+        
     }
-}
-
-class Node{
-    List<Integer> network;
-    boolean visited;
- 
-    public Node(){
-        this.network = new ArrayList<>();
-        this.visited = false;
-    }
-
-    public void addNetwork(int network){
-        this.network.add(network);
-    }
-    public List<Integer> getValue() {
-        return network;
-    }
-    public int getNetworkSize(){
-        return this.network.size();
-    }
- 
 }
