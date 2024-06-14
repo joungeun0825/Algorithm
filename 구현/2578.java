@@ -1,85 +1,81 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-public class Main {
-	static int [][] arr = new int[5][5]; // 빙고판
-	static int num; // 숫자 부른 횟수
-	static int count; // 빙고 갯수
-	
+// The main method must be in a class named "Main".
+class Main {
+    static int[][] chulsu;
+    static int[] row,col;
+    static int cnt,cross,rcross,result;
     public static void main(String[] args) throws IOException{
-    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    	
-    	// 빙고판 입력
-    	for(int i = 0; i < 5; i++) {
-    		StringTokenizer st = new StringTokenizer(br.readLine());
-    		for(int j = 0; j < 5; j++) {
-    			arr[i][j] = Integer.parseInt(st.nextToken());
-    		}
-    	}
-    	
-    	// 숫자 하나씩 부름
-    	for(int i = 0; i < 5; i++) {
-    		StringTokenizer st = new StringTokenizer(br.readLine());
-    		for(int j = 0; j < 5; j++) {
-    			num++;
-    			bingo(Integer.parseInt(st.nextToken()));
-    			bingoCheck();
-    			if(count >= 3) {
-    				System.out.println(num);
-    				return;
-    			}
-    		}
-    	} 	
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        chulsu = new int[5][5];
+        for (int i=0; i<5; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j=0; j<5; j++) {
+                chulsu[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        cnt = 1;
+        row = new int[] {0,0,0,0,0};
+        col = new int[] {0,0,0,0,0};
+        cross = 0;
+        rcross = 0;
+        result = 0;
+        for (int i=0; i<5; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j=0; j<5; j++) {
+                bingo(Integer.parseInt(st.nextToken()));
+                if(result>=3){
+                    System.out.println(cnt);
+                    return;
+                }
+                cnt+=1;
+            }
+        }
+        
     }
-    
-    // 부른 숫자 지움 처리 (-1)
-    public static void bingo(int n){
+
+     public static void bingo(int n){
     	for(int i = 0; i < 5; i++) {
     		for(int j = 0; j < 5; j++) {
-    			if(arr[i][j] == n) {
-    				arr[i][j] = -1;
+    			if(chulsu[i][j] == n) {
+    				col[i] += 1;
+                    row[j] += 1;
+                    if(i==j && i!=2 && j !=2){
+                        cross += 1;
+                    }else if(i+j==4&& i!=2 && j !=2){
+                        rcross += 1;
+                    }else if(i == 2 && j ==2){
+                        cross += 1;
+                        rcross += 1;
+                    }
+                    check(i,j);
     			}
-    		}
-    	}
-    }
-    
-    // 빙고 갯수 검사
-    public static void bingoCheck() {
-    	count = 0;
-    	int row = 0; // 가로 빙고 
-    	int col = 0; // 세로 빙고
-    	int xy = 0; // 오른쪽 아래로 가는 대각선
-    	int yx = 0; // 왼쪽 아래로 가는 대각선
-    	int index = 0;
-    	for(int i = 0; i < 5; i++) {
-    		row = 0;
-    		col = 0;
-    		for(int j = 0; j < 5; j++) {			
-    			row += arr[i][j];
-    			col += arr[j][i];
-    			
-    			if(i == j) {
-    				xy += arr[i][j];
-    			}
-    			if(i == index && j == 4 - index) {
-    				yx += arr[i][j];
-    				index++;
-    			}
-    		}
-    		if(row == -5) {
-    			count++;
-    		}
-    		if(col == -5) {
-    			count++;
-    		}
-    		if(xy == -5) {
-    			count++;
-    		}
-    		if(yx == -5) {
-    			count++;
     		}
     	}
     }
+
+    public static void check(int i, int j){
+        if(col[i]==5){
+            col[i] = 0;
+            result += 1;
+        }
+        if(row[j]==5){
+            row[j] = 0;
+            result += 1;
+        }
+        if(cross==5){
+            cross = 0;
+            result += 1;
+        }
+        if(rcross==5){
+            rcross = 0;
+            result += 1;
+        }
+    }
+
 }
