@@ -1,66 +1,65 @@
-
-
 import java.util.*;
-import java.lang.*;
-import java.io.*;
 
-// The main method must be in a class named "Main".
-class Main {
-    public static void main(String[] args) throws IOException{
+public class Main {
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        int T = Integer.parseInt(br.readLine());
+    public static class Pair {
+        int index;
+        int value;
 
-        //테스트케이스 만큼 loop
-        for(int i=0;i<T;i++){
+        Pair(int index, int value) {
+            this.index = index;
+            this.value = value;
+        }
 
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            
-            //N,M 초기화
-            int N = Integer.parseInt(st.nextToken());
-            int M = Integer.parseInt(st.nextToken());
-            
-            //queue 연결리스트로 초기화
-            LinkedList<int[]> queue = new LinkedList<>();
-            st = new StringTokenizer(br.readLine());
-            for(int a=0;a<N;a++){
-                queue.offer(new int[] { a, Integer.parseInt(st.nextToken()) });
+        public int getValue() {
+            return this.value;
+        }
+
+        public int getIndex() {
+            return this.index;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt(); // 테스트 케이스 개수
+
+        for (int t = 0; t < T; t++) {
+            int n = sc.nextInt(); // 문서 개수
+            int m = sc.nextInt(); // 목표 문서의 인덱스
+
+            Deque<Pair> queue = new LinkedList<>();
+            for (int i = 0; i < n; i++) {
+                int val = sc.nextInt();
+                queue.addLast(new Pair(i, val));
             }
 
-            int cnt=0;            
-            while(!queue.isEmpty()){
-                
-                //가장 앞에 있는 거 하나 뽑기
-                int[] now = queue.poll();
-                boolean pop = true;
+            int printOrder = 0;
 
-                //지금 중요도보다 더 큰 중요도가 있는 경우
-                for(int[] q:queue){
-                    if(q[1] > now[1]){
-                        //뽑을 수 없음
-                        pop = false;
-                    }
-                }
-                //뽑아도 되는 경우
-                if(pop){
+            while (!queue.isEmpty()) {
+                Pair current = queue.pollFirst();
+                boolean hasHigherPriority = false;
 
-                    //뽑음
-                    cnt+=1;
-                    //알아낼 문서가 맞다면
-                    if(now[0] == M){
-                        //cnt를 출력
-                        sb.append(cnt).append('\n');
+                // 현재 문서보다 높은 우선순위가 있는지 확인
+                for (Pair p : queue) {
+                    if (p.getValue() > current.getValue()) {
+                        hasHigherPriority = true;
                         break;
                     }
                 }
-                //뽑으면 안되는 경우
-                else{
-                    //다시 큐에 집어넣음
-                    queue.offer(now);
+
+                if (hasHigherPriority) {
+                    queue.addLast(current); // 우선순위가 높은 문서가 있으므로 뒤로 보냄
+                } else {
+                    printOrder++; // 인쇄 순서 증가
+                    if (current.getIndex() == m) { // 목표 문서라면 출력
+                        System.out.println(printOrder);
+                        break;
+                    }
                 }
             }
         }
-        System.out.println(sb);
+
+        sc.close();
     }
 }
