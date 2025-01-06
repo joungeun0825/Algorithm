@@ -1,43 +1,33 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
-import java.lang.*;
-import java.io.*;
 
-// The main method must be in a class named "Main".
-class Main{
+public class Main {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        Stack<Character> stk = new Stack<>();
-        String s = br.readLine();
-        
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String str = sc.next();
+        String[] arr = str.split("");
+
         int stick = 0;
-        int total = stick;
-        Character prev = ' ';
-        for(int i=0;i<s.length();i++){
-            Character now = s.charAt(i);
-            if(now=='('){
-                stick += 1;
-                total += 1;
-                stk.push('(');
-            }
-            else if(now==')'){
-                stick -= 1;
-                if(prev=='('){
-                    total -= 1;
-                    total += stick;
+        String before = "(";
+        Deque<String> queue = new LinkedList<>();
+        for (String a : arr) {
+            if (a.equals("(")) {
+                queue.push(a);
+                stick++;
+            } else {
+                queue.poll();
+                if (before.equals("(")) {
+                    stick--;
+                    stick += queue.size();
                 }
-                stk.pop();               
             }
-            prev = now;
-    
+            before = a;
         }
-        System.out.println(total);          
-        
+
+        System.out.println(stick);
+
     }
-    
-
-
 }
-
-
-    
