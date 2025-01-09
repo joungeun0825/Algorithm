@@ -1,74 +1,74 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.*;
 
 public class Main {
-    static char[][] map, answer;
-    static int[] dx = {1, 1, 1, 0, 0, -1, -1, -1};
-    static int[] dy = {0, 1, -1, 1, -1, 0, 1, -1};
-    static int n;
+    private static final int[] dx = {-1, -1, -1, 0, 1, 1, 1, 0}; // 8방향
+    private static final int[] dy = {-1, 0, 1, 1, 1, 0, -1, -1};
+    private static int n;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        map = new char[n][n];
-        answer = new char[n][n];
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        sc.nextLine();
 
-        // 지뢰 위치 입력
-        for (int i = 0; i < n; i++) {
-            String line = br.readLine();
-            for (int j = 0; j < n; j++) {
-                map[i][j] = line.charAt(j);
-                answer[i][j] = '.'; // 초기화
-            }
-        }
-
+        char[][] arr = new char[n][n];
+        char[][] open = new char[n][n];
+        char[][] result = new char[n][n];
         boolean gameOver = false;
 
-        // 플레이어의 이동 입력
+        //초기화
         for (int i = 0; i < n; i++) {
-            String line = br.readLine();
+            arr[i] = sc.nextLine().toCharArray();
+        }
+
+        for (int i = 0; i < n; i++) {
+            open[i] = sc.nextLine().toCharArray();
+        }
+
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (line.charAt(j) == 'x') {
-                    if (map[i][j] == '*') {
+                char c = open[i][j];
+                if (c == 'x') {
+                    if(arr[i][j] == '*'){
                         gameOver = true;
-                    } else {
-                        answer[i][j] = (char) (countAdjacentMines(i, j) + '0');
                     }
+                    result[i][j] = String.valueOf(search(i, j, arr)).charAt(0);
+                }else {
+                    result[i][j] = '.';
                 }
             }
         }
 
-        // 게임 오버 처리: 모든 지뢰를 표시
-        if (gameOver) {
+        if(gameOver) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (map[i][j] == '*') {
-                        answer[i][j] = '*';
+                    if(arr[i][j] == '*'){
+                        System.out.print("*");
+                    }else{
+                        System.out.print(result[i][j]);
                     }
                 }
+                System.out.println();
+            }
+        }else{
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    System.out.print(result[i][j]);
+                }
+                System.out.println();
             }
         }
 
-        // 출력
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                System.out.print(answer[i][j]);
-            }
-            System.out.println();
-        }
     }
 
-    // 인접한 지뢰 개수 계산
-    public static int countAdjacentMines(int x, int y) {
-        int count = 0;
-        for (int i = 0; i < 8; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if (nx >= 0 && nx < n && ny >= 0 && ny < n && map[nx][ny] == '*') {
-                count++;
+    private static int search(int i, int j, char[][] arr) {
+        int cnt = 0;
+        for (int x = 0; x < 8; x++) {
+            int nx = i + dx[x];
+            int ny = j + dy[x];
+            if (0 <= nx && nx < n && 0 <= ny && ny < n && arr[nx][ny] == '*') {
+                cnt += 1;
             }
         }
-        return count;
+        return cnt;
     }
 }
