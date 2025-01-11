@@ -1,92 +1,48 @@
 import java.util.*;
-import java.lang.*;
-import java.io.*;
 
-class Main {
-    static int val, num, x_val, y_val;
-    static int[][] arr;
+public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        int dx[] = {1, 0, -1, 0};
+        int dy[] = {0, 1, 0, -1};
+        int n = sc.nextInt();
+        int x = sc.nextInt();
 
-        int N = sc.nextInt();
-        num = sc.nextInt();
-        arr = new int[N][N];
-
-        val = (int) Math.pow(N, 2);
-        x_val = -1;
-        y_val = -1;
-
-        for (int i = 0; i < N / 2; i++) {
-            int j = N - 1 - i;
-            down(i, j - 1, i);
-            right(i, j - 1, j);
-            up(j, i + 1, j);
-            left(j, i + 1, i);
-        }
-
-        arr[N / 2][N / 2] = val;
-        if(val==num){
-            x_val=N/2;
-            y_val=N/2;
-        }
-
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                bw.write(arr[i][j] + " ");
+        int[][] arr = new int[n][n];
+        int currentX = 0, currentY = 0;
+        int resultX = 0, resultY = 0;
+        int number = n * n;
+        int direction = 0;
+        while (number > 0) {
+            arr[currentX][currentY] = number;
+            if (number == x) {
+                resultX = currentX;
+                resultY = currentY;
             }
-            bw.newLine();
-        }
+            number--;
 
-        bw.write((x_val + 1) + " " + (y_val + 1));
-        bw.newLine();
+            int nextX = currentX + dx[direction];
+            int nextY = currentY + dy[direction];
 
-        bw.flush();
-        bw.close();
-    }
-
-    public static void down(int start, int end, int x) {
-        for (int i = start; i <= end; i++) {
-            if (val == num) {
-                x_val = i;
-                y_val = x;
+            if (nextX < 0 || nextX >= n || nextY < 0 || nextY >= n || arr[nextX][nextY] != 0) {
+                direction = (direction + 1) % 4; // 방향 변경
+                nextX = currentX + dx[direction];
+                nextY = currentY + dy[direction];
             }
-            arr[i][x] = val;
-            val--;
+            currentX = nextX;
+            currentY = nextY;
         }
-    }
 
-    public static void right(int start, int end, int x) {
-        for (int i = start; i <= end; i++) {
-            if (val == num) {
-                x_val = x;
-                y_val = i;
+        for (int[] a : arr) {
+            for (int now : a) {
+                System.out.print(now + " ");
             }
-            arr[x][i] = val;
-            val--;
+            System.out.println();
         }
-    }
 
-    public static void up(int start, int end, int x) {
-        for (int i = start; i >= end; i--) {
-            if (val == num) {
-                x_val = i;
-                y_val = x;
-            }
-            arr[i][x] = val;
-            val--;
-        }
-    }
+        System.out.println((resultX + 1) + " " + (resultY + 1));
 
-    public static void left(int start, int end, int x) {
-        for (int i = start; i >= end; i--) {
-            if (val == num) {
-                x_val = x;
-                y_val = i;
-            }
-            arr[x][i] = val;
-            val--;
-        }
+
     }
 }
