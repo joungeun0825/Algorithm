@@ -1,45 +1,28 @@
-import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int[] secretKey;
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int m = sc.nextInt();
         int n = sc.nextInt();
-        int k = sc.nextInt();
+        int k = sc.nextInt(); // 사용되지 않으므로 삭제 가능
 
-        secretKey = new int[m];
-        for(int i=0; i<m; i++){
-            secretKey[i] = sc.nextInt();
+        // secretKey와 userKey를 문자열로 변환
+        StringBuilder secretKey = new StringBuilder();
+        for (int i = 0; i < m; i++) {
+            secretKey.append(sc.nextInt()).append(" ");
         }
 
-        int[] userKey = new int[n];
-        for(int i=0; i<n; i++){
-            userKey[i] = sc.nextInt();
+        StringBuilder userKey = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            userKey.append(sc.nextInt()).append(" ");
         }
 
-        if(n<m){
+        // 부분 문자열로 탐색
+        if (userKey.toString().contains(secretKey.toString())) {
+            System.out.println("secret");
+        } else {
             System.out.println("normal");
-            return;
         }
-
-        for(int i=0; i<=n-m; i++){
-            if(search(userKey, i)){
-                System.out.println("secret");
-                return;
-            }
-        }
-        System.out.println("normal");
-    }
-    
-    public static boolean search(int[] userKey, int i){
-        for(int x=0; x<secretKey.length;x++){
-            if(secretKey[x]!=userKey[(x+i)]){
-                return false;
-            }
-        }
-        return true;
     }
 }
